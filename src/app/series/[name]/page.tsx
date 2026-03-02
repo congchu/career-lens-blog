@@ -11,7 +11,7 @@ interface PageProps {
 export async function generateStaticParams() {
   const activeSeries = getAllSeries();
   const allNames = Array.from(new Set([...SERIES_LIST, ...activeSeries]));
-  return allNames.map((name) => ({ name: encodeURIComponent(name) }));
+  return allNames.map((name) => ({ name }));
 }
 
 export async function generateMetadata({
