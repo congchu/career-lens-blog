@@ -1,0 +1,150 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-primary: #6366F1;
+  --color-primary-light: #818CF8;
+  --color-primary-dark: #4F46E5;
+}
+
+body {
+  font-family: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif;
+  background: #F9FAFB;
+  color: #111827;
+}
+
+/* MDX prose styles */
+.prose {
+  max-width: 65ch;
+  line-height: 1.8;
+}
+
+.prose h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+  color: #111827;
+}
+
+.prose h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+  color: #111827;
+}
+
+.prose h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+  color: #111827;
+}
+
+.prose p {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  color: #374151;
+}
+
+.prose a {
+  color: #6366F1;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.prose a:hover {
+  color: #4F46E5;
+}
+
+.prose ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.prose ol {
+  list-style-type: decimal;
+  padding-left: 1.5rem;
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.prose li {
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
+  color: #374151;
+}
+
+.prose blockquote {
+  border-left: 4px solid #6366F1;
+  padding-left: 1rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  color: #6B7280;
+  font-style: italic;
+}
+
+.prose code {
+  background: #F3F4F6;
+  padding: 0.15rem 0.4rem;
+  border-radius: 0.25rem;
+  font-size: 0.875em;
+  color: #6366F1;
+}
+
+.prose pre {
+  background: #1F2937;
+  color: #F9FAFB;
+  padding: 1.25rem;
+  border-radius: 0.75rem;
+  overflow-x: auto;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.prose pre code {
+  background: none;
+  padding: 0;
+  color: inherit;
+  font-size: 0.875rem;
+}
+
+.prose img {
+  border-radius: 0.75rem;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.prose hr {
+  border-color: #E5E7EB;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+.prose strong {
+  font-weight: 700;
+  color: #111827;
+}
+
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.prose th {
+  background: #F3F4F6;
+  padding: 0.5rem 1rem;
+  text-align: left;
+  font-weight: 600;
+  border-bottom: 2px solid #E5E7EB;
+}
+
+.prose td {
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid #E5E7EB;
+}
