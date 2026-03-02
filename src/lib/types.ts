@@ -18,6 +18,7 @@ export const SERIES_LIST = [
   "2026프론트엔드지도",
   "AI시대생존법",
   "취업현실탐구",
+  "취준기본기",
 ] as const;
 
 export type SeriesName = (typeof SERIES_LIST)[number];
