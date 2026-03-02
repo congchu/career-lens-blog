@@ -22,7 +22,7 @@ const components = {
 
 export default function MDXContent({ source }: { source: string }) {
   return (
-    <div className="prose prose-gray max-w-none prose-headings:text-gray-900 prose-a:text-primary">
+    <div className="prose max-w-none">
       <MDXRemote source={source} components={components} options={{ mdxOptions: { remarkPlugins: [remarkGfm] } }} />
     </div>
   );
