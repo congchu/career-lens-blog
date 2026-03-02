@@ -1,4 +1,5 @@
 import { MDXRemote } from "next-mdx-remote/rsc";
+import remarkGfm from "remark-gfm";
 
 const components = {
   h2: (props: React.HTMLAttributes<HTMLHeadingElement>) => {
@@ -22,7 +23,7 @@ const components = {
 export default function MDXContent({ source }: { source: string }) {
   return (
     <div className="prose prose-gray max-w-none prose-headings:text-gray-900 prose-a:text-primary">
-      <MDXRemote source={source} components={components} />
+      <MDXRemote source={source} components={components} options={{ mdxOptions: { remarkPlugins: [remarkGfm] } }} />
     </div>
   );
 }
