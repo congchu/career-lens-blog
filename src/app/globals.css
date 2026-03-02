@@ -13,12 +13,12 @@ body {
 }
 
 /* MDX prose styles */
-.prose {
+.mdx-content {
   max-width: 65ch;
   line-height: 1.8;
 }
 
-.prose h1 {
+.mdx-content h1 {
   font-size: 2rem;
   font-weight: 800;
   margin-top: 2.5rem;
@@ -26,61 +26,61 @@ body {
   color: #111827;
 }
 
-.prose h2 {
-  font-size: 1.5rem !important;
-  font-weight: 700 !important;
-  margin-top: 2.5rem !important;
-  margin-bottom: 0.75rem !important;
-  color: #6366F1 !important;
-  padding-left: 0.75rem !important;
-  border-left: 4px solid #6366F1 !important;
+.mdx-content h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-top: 2.5rem;
+  margin-bottom: 0.75rem;
+  color: #6366F1;
+  padding-left: 0.75rem;
+  border-left: 4px solid #6366F1;
 }
 
-.prose h3 {
-  font-size: 1.25rem !important;
-  font-weight: 600 !important;
-  margin-top: 1.5rem !important;
-  margin-bottom: 0.5rem !important;
-  color: #4F46E5 !important;
+.mdx-content h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+  color: #4F46E5;
 }
 
-.prose p {
+.mdx-content p {
   margin-top: 1rem;
   margin-bottom: 1rem;
   color: #374151;
 }
 
-.prose a {
+.mdx-content a {
   color: #6366F1;
   text-decoration: underline;
   text-underline-offset: 2px;
 }
 
-.prose a:hover {
+.mdx-content a:hover {
   color: #4F46E5;
 }
 
-.prose ul {
+.mdx-content ul {
   list-style-type: disc;
   padding-left: 1.5rem;
   margin-top: 0.75rem;
   margin-bottom: 0.75rem;
 }
 
-.prose ol {
+.mdx-content ol {
   list-style-type: decimal;
   padding-left: 1.5rem;
   margin-top: 0.75rem;
   margin-bottom: 0.75rem;
 }
 
-.prose li {
+.mdx-content li {
   margin-top: 0.25rem;
   margin-bottom: 0.25rem;
   color: #374151;
 }
 
-.prose blockquote {
+.mdx-content blockquote {
   border-left: 4px solid #6366F1;
   padding-left: 1rem;
   margin-top: 1rem;
@@ -89,7 +89,7 @@ body {
   font-style: italic;
 }
 
-.prose code {
+.mdx-content code {
   background: #F3F4F6;
   padding: 0.15rem 0.4rem;
   border-radius: 0.25rem;
@@ -97,7 +97,7 @@ body {
   color: #6366F1;
 }
 
-.prose pre {
+.mdx-content pre {
   background: #1F2937;
   color: #F9FAFB;
   padding: 1.25rem;
@@ -107,40 +107,40 @@ body {
   margin-bottom: 1.25rem;
 }
 
-.prose pre code {
+.mdx-content pre code {
   background: none;
   padding: 0;
   color: inherit;
   font-size: 0.875rem;
 }
 
-.prose img {
+.mdx-content img {
   border-radius: 0.75rem;
   margin-top: 1.5rem;
   margin-bottom: 1.5rem;
 }
 
-.prose hr {
+.mdx-content hr {
   border-color: #E5E7EB;
   margin-top: 2rem;
   margin-bottom: 2rem;
 }
 
-.prose strong {
-  font-weight: 700 !important;
-  color: #1E1B4B !important;
-  background: linear-gradient(transparent 60%, rgba(99, 102, 241, 0.15) 60%) !important;
-  padding: 0 2px !important;
+.mdx-content strong {
+  font-weight: 700;
+  color: #1E1B4B;
+  background: linear-gradient(transparent 60%, rgba(99, 102, 241, 0.15) 60%);
+  padding: 0 2px;
 }
 
-.prose table {
+.mdx-content table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 1.25rem;
   margin-bottom: 1.25rem;
 }
 
-.prose th {
+.mdx-content th {
   background: #EEF2FF;
   padding: 0.5rem 1rem;
   text-align: left;
@@ -149,7 +149,7 @@ body {
   border-bottom: 2px solid #C7D2FE;
 }
 
-.prose td {
+.mdx-content td {
   padding: 0.5rem 1rem;
   border-bottom: 1px solid #E5E7EB;
 }
