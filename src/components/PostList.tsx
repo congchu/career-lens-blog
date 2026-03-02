@@ -20,12 +20,12 @@ export default function PostList({ posts }: { posts: PostMeta[] }) {
           onSelect={setSelectedSeries}
         />
       </section>
-      <section className="grid grid-cols-1 md:grid-cols-2 gap-5">
+      <section className="divide-y divide-gray-100">
         {filtered.map((post) => (
           <PostCard key={post.slug} post={post} />
         ))}
         {filtered.length === 0 && (
-          <p className="col-span-2 text-center text-gray-400 py-12">
+          <p className="text-center text-gray-400 py-12">
             해당 시리즈의 글이 아직 없습니다.
           </p>
         )}
