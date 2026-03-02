@@ -20,7 +20,7 @@ export default function PostList({ posts }: { posts: PostMeta[] }) {
           onSelect={setSelectedSeries}
         />
       </section>
-      <section className="divide-y divide-gray-100">
+      <section className="divide-y divide-gray-200">
         {filtered.map((post) => (
           <PostCard key={post.slug} post={post} />
         ))}
