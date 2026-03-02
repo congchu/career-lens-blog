@@ -12,13 +12,10 @@ export interface Post extends PostMeta {
 }
 
 export const SERIES_LIST = [
-  "숫자로보는채용시장",
-  "채용공고번역기",
-  "신입공략가이드",
-  "2026프론트엔드지도",
-  "AI시대생존법",
-  "취업현실탐구",
-  "취준기본기",
+  "채용시장 데이터룸",
+  "취준 실전 가이드",
+  "기술 트렌드 리포트",
+  "렌코치의 한마디",
 ] as const;
 
 export type SeriesName = (typeof SERIES_LIST)[number];
