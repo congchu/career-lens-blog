@@ -13,7 +13,7 @@ export interface Post extends PostMeta {
 
 export const SERIES_LIST = [
   "채용시장 데이터룸",
-  "취준 실전 가이드",
+  "렌코치의 취준 가이드",
   "기술 트렌드 리포트",
   "렌코치의 한마디",
 ] as const;
